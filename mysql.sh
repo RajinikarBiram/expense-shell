@@ -20,8 +20,7 @@ VALIDATE(){
        echo -e "$2...$G SUCCESS $N"
     fi
 }
-
-if[ $USERID -ne 0 ]
+if [ $USERID -ne 0 ]
 then 
    echo "Please run this script in root access"
    exit 1
