@@ -9,7 +9,7 @@ G="\e[32m"
 N="\e[0m"
 Y="\e[33m"
 echo " Please enter DB password:"
-read mysql_root_password
+read -s mysql_root_password
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -41,7 +41,7 @@ VALIDATE $? "Starting MYSQL server"
 # VALIDATE $? "Setting up root password"
 
 # Below code will be used to idempotent nature
-mysql -h db.rajinikar.cloud -u root -p ExpenseApp@1 -e 'show databases'; &>>$LOGFILE
+mysql -h db.rajinikar.cloud -uroot -p${mysql_root_password} -e 'show databases'; &>>$LOGFILE
 if [ $? -ne 0 ]
 then
     mysql_secure_installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
