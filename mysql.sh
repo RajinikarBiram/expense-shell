@@ -41,7 +41,7 @@ VALIDATE $? "Starting MYSQL server"
 # VALIDATE $? "Setting up root password"
 
 # Below code will be used to idempotent nature
-mysql -h db.rajinikar.cloud -uroot -pExpenseApp@1 -e 'show databases';&>>$LOGFILE
+mysql -h mysql.rajinikar.cloud -uroot -pExpenseApp@1 -e 'show databases';&>>$LOGFILE
 if [$? -ne 0]
 then 
    echo "mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
