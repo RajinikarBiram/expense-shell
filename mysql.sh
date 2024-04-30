@@ -45,7 +45,7 @@ mysql -h mysql.rajinikar.cloud -uroot -pExpenseApp@1 -e 'show databases;' &>>$LO
 if [$? -ne 0]
 then 
    echo "mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
-   VALIDATE $1 "MYSQL root password setup"
+   VALIDATE $? "MYSQL root password setup"
 else
    echo -e " MYSQL root password is already setup...$Y SKIPPING $N"
 fi
