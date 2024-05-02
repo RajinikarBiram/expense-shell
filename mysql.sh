@@ -44,5 +44,11 @@ VALIDATE $? "Starting MYSQL server"
 #below code will be used for idempotent nature
 mysql -h db.rajinikar.cloud -uroot -p{mysql_root_password} -e 'show databases;' &>>$LOGFILE
 
+if [ $? -ne 0]
+then
+   mysql-secure-installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
+else 
+   echo -e " MySQL root password is already setup...$Y SKIPPING $N"
+fi
 
 
