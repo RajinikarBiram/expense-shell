@@ -9,6 +9,9 @@ G="\e[32m"
 N="\e[0m"
 Y="\e[33m"
 
+echo "Please enter DB password:"
+read -s mysql_root_password
+
 VALIDATE(){
     if [ $1 -ne 0 ]
     then
@@ -35,6 +38,11 @@ VALIDATE $? "Enabling MYSQL server"
 systemctl start mysqld &>>$LOGFILE
 VALIDATE $? "Starting MYSQL server"
 
-mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
-VALIDATE $? "Setting up root password"
+#mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
+#VALIDATE $? "Setting up root password"
+
+#below code will be used for idempotent nature
+mysql -h db.rajinikar.cloud -uroot -p{mysql_root_password} -e 'show databases;' &>>$LOGFILE
+
+
 
