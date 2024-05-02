@@ -7,7 +7,8 @@ LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
-N="\e[0m"
+N="\e[0m
+
 echo "Please enter DB password:"
 read -s mysql_root_password
 
@@ -20,7 +21,6 @@ VALIDATE(){
         echo -e "$2...$G SUCCESS $N"
     fi
 }
-
 if [ $USERID -ne 0 ]
 then
     echo "Please run this script with root access."
@@ -29,7 +29,7 @@ else
     echo "You are super user."
 fi
 
-dnf module disable nodejs -y &>>$LOGFILE
+dnf module diable nodejs -y &>>$LOGFILE
 VALIDATE $? "Disabling default nodejs"
 
 dnf module enable nodejs:20 -y &>>$LOGFILE
@@ -41,29 +41,28 @@ VALIDATE $? "Installing nodejs"
 id expense &>>$LOGFILE
 if [ $? -ne 0 ]
 then
-    useradd expense &>>$LOGFILE
-    VALIDATE $? "Creating expense user"
+    useradd expense
+    VALIDATE $? "creating expense user"
 else
-    echo -e "Expense user already created...$Y SKIPPING $N"
+    echo -e " Expense user already created... $Y SKIPPING $N"
 fi
 
 mkdir -p /app &>>$LOGFILE
-VALIDATE $? "Creating app directory"
+VALIDATE $? "creating app directory"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE
 VALIDATE $? "Downloading backend code"
 
 cd /app
-rm -rf /app/*
 unzip /tmp/backend.zip &>>$LOGFILE
-VALIDATE $? "Extracted backend code"
+VALIDATE $? "extracted backend code"
 
 npm install &>>$LOGFILE
 VALIDATE $? "Installing nodejs dependencies"
 
-#check your repo and path
+#need to give absolute path for backend.service
 cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service &>>$LOGFILE
-VALIDATE $? "Copied backend service"
+VALIDATE $? "copied backend.service"
 
 systemctl daemon-reload &>>$LOGFILE
 VALIDATE $? "Daemon Reload"
@@ -75,10 +74,10 @@ systemctl enable backend &>>$LOGFILE
 VALIDATE $? "Enabling backend"
 
 dnf install mysql -y &>>$LOGFILE
-VALIDATE $? "Installing MySQL Client"
+VALIDATE $? "Installing MYSQL Client"
 
-mysql -h db.daws78s.online -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOGFILE
+mysql -u db.rajinikar.cloud -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOGFILE
 VALIDATE $? "Schema loading"
 
 systemctl restart backend &>>$LOGFILE
-VALIDATE $? "Restarting Backend"
+VALIDATE $? "Restarting backend"
