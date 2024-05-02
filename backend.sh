@@ -7,8 +7,7 @@ LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
-N="\e[0m
-
+N="\e[0m"
 echo "Please enter DB password:"
 read -s mysql_root_password
 
@@ -41,10 +40,10 @@ VALIDATE $? "Installing nodejs"
 id expense &>>$LOGFILE
 if [ $? -ne 0 ]
 then
-    useradd expense
+    useradd expense &>>$LOGFILE
     VALIDATE $? "creating expense user"
 else
-    echo -e " Expense user already created... $Y SKIPPING $N"
+    echo -e "Expense user already created... $Y SKIPPING $N"
 fi
 
 mkdir -p /app &>>$LOGFILE
@@ -54,6 +53,7 @@ curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expen
 VALIDATE $? "Downloading backend code"
 
 cd /app
+rm -rf /app/*
 unzip /tmp/backend.zip &>>$LOGFILE
 VALIDATE $? "extracted backend code"
 
@@ -76,7 +76,7 @@ VALIDATE $? "Enabling backend"
 dnf install mysql -y &>>$LOGFILE
 VALIDATE $? "Installing MYSQL Client"
 
-mysql -u db.rajinikar.cloud -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOGFILE
+mysql -h db.rajinikar.cloud -uroot -p${mysql_root_password} < /app/schema/backend.sql &>>$LOGFILE
 VALIDATE $? "Schema loading"
 
 systemctl restart backend &>>$LOGFILE
